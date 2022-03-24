@@ -1,4 +1,4 @@
-module github.com/bigmate/errors
+module github.com/bigmate/fe
 
 go 1.17
 
