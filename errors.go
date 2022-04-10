@@ -19,7 +19,7 @@ type Chainer interface {
 // Field returns a field specific error
 // that is useful to return structured error
 func Field(field, format string, args ...interface{}) Chainer {
-	return (chain{status.New(codes.InvalidArgument, "field error")}).Field(field, format, args...)
+	return (&chain{status.New(codes.InvalidArgument, "field error")}).Field(field, format, args...)
 }
 
 // NonField returns an error that is not related to any field
@@ -31,7 +31,7 @@ type chain struct {
 	*status.Status
 }
 
-func (c chain) Field(field, format string, args ...interface{}) Chainer {
+func (c *chain) Field(field, format string, args ...interface{}) Chainer {
 	st, _ := c.WithDetails(&FieldError{
 		Field: field,
 		Error: fmt.Sprintf(format, args...),
@@ -42,10 +42,10 @@ func (c chain) Field(field, format string, args ...interface{}) Chainer {
 	return c
 }
 
-func (c chain) NonField(format string, args ...interface{}) Chainer {
+func (c *chain) NonField(format string, args ...interface{}) Chainer {
 	return c.Field(nonField, format, args...)
 }
 
-func (c chain) Error() error {
+func (c *chain) Error() error {
 	return c.Err()
 }
